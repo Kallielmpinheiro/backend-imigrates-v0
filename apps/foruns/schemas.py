@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from ninja import Schema
 
 class CreateForumRequest(Schema):
@@ -9,6 +11,7 @@ class UpdateForumRequest(Schema):
     content: str
     
 class ForumResponse(Schema):
-    id: int
+    created_at: datetime
+    updated_at: datetime
     title: str
-    content: str
+    description: str

@@ -1,6 +1,7 @@
 from ninja import Router
 from typing import List
 from apps.foruns.schemas import CreateForumRequest, UpdateForumRequest, ForumResponse
+from apps.foruns.models import Forum, Comment, Reply, LikeComment, LikeReply
 
 router = Router(tags=["Forum"])
 
@@ -18,7 +19,7 @@ def health(request):
     operation_id="forum_list",
 )
 def list_forums(request):
-    return 200, []
+    return 200, list(Forum.objects.filter(active=True).values('created_at', 'updated_at', 'title', 'description'))
 
 
 @router.get(
