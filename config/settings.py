@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-xygou3y=rq=4l)a5ub-wh*f9$r2jw$d@)%gw5smpq78fpi2vik
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'backend-imigrates-v0.onrender.com'
+    'backend-imigrates-v0.onrender.com',
+    '127.0.0.1'
 ]
 
 
@@ -39,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'apps.foruns',
+    'apps.chats'
 ]
 
 MIDDLEWARE = [

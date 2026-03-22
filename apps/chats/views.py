@@ -1,7 +1,7 @@
 from ninja import Router
 from ninja.responses import Response
 from typing import List
-from apps.chat.schemas import CreateChatRequest, UpdateChatRequest, ChatResponse
+from apps.chats.schemas import CreateChatRequest, UpdateChatRequest, ChatResponse
 
 router = Router(tags=["Chat"])
 

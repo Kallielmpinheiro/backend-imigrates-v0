@@ -1,6 +1,6 @@
 from ninja import Router
 from typing import List
-from apps.forum.schemas import CreateForumRequest, UpdateForumRequest, ForumResponse
+from apps.foruns.schemas import CreateForumRequest, UpdateForumRequest, ForumResponse
 
 router = Router(tags=["Forum"])
 
