@@ -3,7 +3,8 @@ from typing import List
 from apps.foruns.schemas import CreateForumRequest, UpdateForumRequest, ForumResponse
 from apps.foruns.models import Forum, Comment, Reply, LikeComment, LikeReply
 
-router = Router(tags=["Forum"])
+
+router = Router()
 
 # Create your views here.
 

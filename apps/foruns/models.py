@@ -17,37 +17,37 @@ class Forum(BaseModel):
     
     
 class Post(BaseModel):
-    
-    forum = models.ForeignKey(Forum, on_delete=models.CASCADE)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    
+    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True) # retirar null e blank depois de implementar autenticação
     title  = models.CharField(max_length=255)
     content = models.TextField()
-    imagem = models.ImageField(upload_to='post_images/', null=True, blank=True)
+    imagem = models.ImageField(upload_to='post_images/', null=True, blank=True) # retirar null e blank depois de fechar com os requisitos
     
     class Meta:
         verbose_name = "Postagem"
         verbose_name_plural = "Postagens"
         ordering = ['-created_at']
 
-            
+    @property
+    def replies(self):
+        return Reply.objects.filter(comment__post=self).count()            
     
 class Comment(BaseModel):
     
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    autor = models.ForeignKey(User, on_delete=models.CASCADE)
+    autor = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True) # retirar null e blank depois de implementar autenticação
     content = models.TextField()
     
     class Meta:
         verbose_name = "Comentário"
         verbose_name_plural = "Comentários"
         ordering = ['-created_at']
+        
     
 
 class Reply(BaseModel):
 
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
-    autor = models.ForeignKey(User, on_delete=models.CASCADE)
+    autor = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True) # retirar null e blank depois de implementar autenticação
     content = models.TextField()
     
     class Meta:
@@ -58,7 +58,7 @@ class Reply(BaseModel):
 class LikeComment(BaseModel):
     
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
-    autor = models.ForeignKey(User, on_delete=models.CASCADE)
+    autor = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True) # retirar null e blank depois de implementar autenticação
 
     class Meta:
         verbose_name = "Like de Comentário"
@@ -68,7 +68,7 @@ class LikeComment(BaseModel):
 class LikeReply(BaseModel):
     
     reply = models.ForeignKey(Reply, on_delete=models.CASCADE)
-    autor = models.ForeignKey(User, on_delete=models.CASCADE)
+    autor = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True) # retirar null e blank depois de implementar autenticação
     
     class Meta:
         verbose_name = "Like de Resposta"
