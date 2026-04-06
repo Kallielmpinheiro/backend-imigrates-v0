@@ -6,7 +6,7 @@ from apps.users.models import User
 
 router = Router(tags=["Auth"])
 
-@router.post("/login", response=TokenSchema, auth=None)
+@router.post("/login", response={200:TokenSchema, 401: dict, 404: dict}, auth=None)
 def login(request, payload: LoginSchema):
     try:
         user = User.objects.get(email=payload.email)
@@ -23,7 +23,7 @@ def login(request, payload: LoginSchema):
         refresh=create_refresh_token(user.pk),
     )
 
-@router.post("/refresh", response={200:TokenSchema, 401: dict}, auth=None)
+@router.post("/refresh", response={200:TokenSchema, 401: dict, 404: dict}, auth=None)
 def refresh(request, data: RefreshSchema):
     try:
         payload = decode_token(data.refresh)
