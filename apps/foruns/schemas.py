@@ -1,68 +1,46 @@
 from datetime import datetime
 from typing import Optional
-
 from ninja import Schema
-from pydantic import ConfigDict
+from pydantic import ConfigDict, Field
 
-class CreateForumRequest(Schema):
-    title: str
-    content: str
-    
-class UpdateForumRequest(Schema):
-    title: str
-    content: str
-    
-class ForumResponse(Schema):
-    created_at: datetime
-    updated_at: datetime
-    title: str
-    description: str
-    
 class CreatePostRequest(Schema):
     title: str
     content: str
-    
     
 class UpdatePostRequest(Schema):
     id: int
     title: Optional[str]
     content: Optional[str]
-    
+
     
 class PostResponse(Schema):
-    model_config = ConfigDict(from_attributes=True)
-
-    created_at: datetime
-    updated_at: datetime
-    title: str
-    content: str
-    
-class CreateCommentRequest(Schema):
-    content: str
-    post_id: int
-    
-class UpdateCommentRequest(Schema):
-    content: str
-    
-class CommentResponse(Schema):
-    model_config = ConfigDict(from_attributes=True)
 
     created_at: datetime
     updated_at: datetime
     content: str
-    post_id: int
+    post_id: int = Field(alias="pk")
+    user_id : int
     
-class CreateReplyRequest(Schema):
-    content: str
-    comment_id: int
+    class Config:
+        from_attributes = True
+        populate_by_name = True
     
-class UpdateReplyRequest(Schema):
-    content: str
-    
-class ReplyResponse(Schema):
-    model_config = ConfigDict(from_attributes=True)
+class PostResponseResponse(Schema):
 
     created_at: datetime
     updated_at: datetime
-    content: str
-    comment_id: int
+    active: bool
+    post_id : int
+    user_id : int
+    post_response_id : int = Field(alias="pk")
+    response : str
+    
+    class Config:
+        from_attributes = True
+        populate_by_name = True
+    
+class CreatePostResponseRequest(Schema):
+    response: str
+
+class UpdatePostResponseRequest(Schema):
+    response: str
