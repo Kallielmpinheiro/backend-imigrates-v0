@@ -2,7 +2,7 @@ from ninja import Router
 from ninja.errors import HttpError
 from .jwt import create_access_token, create_refresh_token, decode_token
 from .schemas import LoginSchema, TokenSchema, RefreshSchema
-from apps.users.models import User
+from apps.user.models import User
 
 router = Router(tags=["Auth"])
 
