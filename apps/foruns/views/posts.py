@@ -1,10 +1,15 @@
-from ninja import Router
+from ninja import Router, UploadedFile, Form, File
+from ninja.files import UploadedFile
 from apps.foruns.models import Post
-from apps.foruns.schemas import CreatePostRequest, PostResponse
+from apps.foruns.schemas import CreatePostRequest, PostResponse, UpdatePostRequest
 from apps.foruns.views.post_responses import router as responses_router
 from auth.jwt import JWTAuth
 from apps.users.models import User
 from typing import List
+from django.db import transaction
+
+MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
+ALLOWED_TYPES = {"image/jpeg", "image/png", "image/webp"}
 
 router = Router(tags=["Post"])
 router.add_router('/{post_id}/responses', responses_router)
@@ -21,7 +26,7 @@ def get_posts(request):
         return 404, {"detail": "Post não encontrado"}
 
 @router.post('', auth=JWTAuth(), response={201: PostResponse, 401: dict}, summary="Criar post")
-def create_post(request, payload: CreatePostRequest):
+def create_post(request, payload: Form[CreatePostRequest], imagem: UploadedFile = File(None)):
     
     try:
         user = User.objects.get(pk=request.auth['sub'])
@@ -30,12 +35,26 @@ def create_post(request, payload: CreatePostRequest):
     except Exception as e:
         return 401, {"message": "Invalid credentials"}
     
-    post = Post(
-        user=user,
-        title=payload.title,
-        content=payload.content,
-    )
-    post.save()
+    if imagem is not None:
+        if imagem.size > MAX_FILE_SIZE:
+            return 422, {"message": "Imagem excede o limite de 5MB"}
+
+        if imagem.content_type not in ALLOWED_TYPES:
+            return 422, {"message": f"Tipo não permitido: {imagem.content_type}"}
+        
+    with transaction.atomic():
+        try:
+            post = Post(
+                user=user,
+                title=payload.title,
+                content=payload.content,
+                category=payload.category,
+                imagem=imagem
+            )
+            post.save()
+            
+        except Exception as e:
+            return 400, {"message": "Error creating post, rolling back transaction"}
     
     return 201, PostResponse.from_orm(post)
 
@@ -48,11 +67,13 @@ def get_post(request, post_id: int):
         return 404, {"detail": "Post não encontrado"}
 
 @router.put('/{post_id}', auth=JWTAuth(), response={200: PostResponse, 404: dict})
-def update_post(request, post_id: int, payload: CreatePostRequest):
+def update_post(request, post_id: int, payload: Form[UpdatePostRequest], imagem: UploadedFile = File(None)):
     try:
         post = Post.objects.get(id=post_id)
-        post.title = payload.title
-        post.content = payload.content
+        post.title = payload.title if payload.title is not None else post.title
+        post.content = payload.content if payload.content is not None else post.content
+        post.category = payload.category if payload.category is not None else post.category
+        post.imagem = imagem if imagem is not None else post.imagem
         post.save()
         return 200, PostResponse.from_orm(post)
     except Post.DoesNotExist:

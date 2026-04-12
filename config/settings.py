@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "ninja.compatibility.files.fix_request_files_middleware",
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -130,6 +131,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+MEDIA_ROOT = (os.path.join(BASE_DIR, 'media'))
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
