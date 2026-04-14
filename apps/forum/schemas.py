@@ -33,6 +33,7 @@ class PostResponse(Schema):
     user: UserEmbed
     category: Optional[str] = None
     file: Optional[FilePostResponse] = None
+    response_count: int
 
     @staticmethod
     def resolve_file(obj) -> Optional[FilePostResponse]:

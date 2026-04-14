@@ -10,7 +10,11 @@ class Post(BaseModel):
     content  = models.TextField('Conteúdo')
     category = models.CharField('Categoria', max_length=100)
     imagem   = models.ImageField(upload_to='post_images/', null=True, blank=True)
-        
+            
+    @property
+    def response_count(self):
+        return self.postresponse_set.count()    
+    
 class PostResponse(BaseModel):
 
     post = models.ForeignKey(to=Post, on_delete=models.CASCADE)
